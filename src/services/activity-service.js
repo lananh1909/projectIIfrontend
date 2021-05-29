@@ -1,19 +1,20 @@
 import axios from 'axios';
 import AuthService from "./auth-service";
 import authHeader from './auth-header';
+import API from '../Component/API';
 
 const headers = {
     'Content-Type': 'application/json',
     'Authorization': authHeader()
 }
 
-const API_URL = "http://localhost:8081/activity/";
+const API_URL = API + "activity/";
 
 const currentUser = AuthService.getCurrentUser()
 
 class ActivityService{
     addActivity(title, content, location, communeId, topicId, fileId, fromDate, toDate){
-        return axios.post(API_URL + "create-activity",
+        return axios.post(API_URL + "create",
         {
             title: title,
             content: content,
@@ -32,23 +33,19 @@ class ActivityService{
         )
     }
 
-    getActivity(){
-        return axios.get(API_URL + "get-all-activity", {headers: headers});
-    }
-
     getActivityById(id){
-        return axios.get(API_URL + "get-activity/" + id, {headers: headers});
+        return axios.get(API_URL + "get/" + id, {headers: headers});
     }
 
     deleteActivity(id){
-        axios.delete(API_URL + "delete-activity", {
+        axios.delete(API_URL + "delete", {
             headers: headers,
             data: id
         });
     }
 
     editActivity(id, title, content, location, communeId, topicId, fileId, fromDate, toDate){
-        return axios.put(API_URL + "update-activity/" + id, {
+        return axios.put(API_URL + "update/" + id, {
             title: title,
             content: content,
             location: location,
@@ -61,11 +58,11 @@ class ActivityService{
         }, {headers: headers});
     }
 
-    getVolunteers(id){
-        return axios.post(API_URL + "get-volunteers", id, {headers: headers});
+    getByPage(params){
+        return axios.get(API_URL + "get",{headers: headers, params: params});
     }
 
-    getByPage(params){
-        return axios.get(API_URL + "activities",{headers: headers, params: params});
+    getFollowing(){
+        return axios.get(API_URL + "following", {headers: headers});
     }
 } export default new ActivityService();

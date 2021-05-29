@@ -612,6 +612,7 @@ pre code {
   padding-left: 0.75rem;
   margin-right: auto;
   margin-left: auto;
+  margin-top: 15px;
 }
 
 @media (min-width: 576px) {
@@ -10308,4 +10309,8 @@ body {
 }
 .sb-sidenav-light .sb-sidenav-footer {
   background-color: #e9ecef;
+}
+
+.hover-item:hover{
+  border-bottom: 3px solid #0069d9;
 }

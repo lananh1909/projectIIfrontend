@@ -4,6 +4,7 @@ import Input from "react-validation/build/input";
 import CheckButton from "react-validation/build/button";
 
 import AuthService from "../../services/auth-service";
+import authService from "../../services/auth-service";
 
 const required = value => {
     if(!value){
@@ -30,6 +31,13 @@ export default class LoginComponent extends Component {
         };
     }
 
+    componentDidMount() {
+        if(authService.getCurrentUser()){
+            window.location.replace("/");
+        }
+    }
+    
+
     onChangeUsername(e) {
         this.setState({
             username: e.target.value
@@ -54,9 +62,13 @@ export default class LoginComponent extends Component {
 
         if(this.checkBtn.context._errors.length === 0){
             AuthService.login(this.state.username, this.state.password).then(
-                () => {
-                    this.props.history.push("/profile");
-                    window.location.reload();
+                (response) => {
+                   if(response.firstLogin === true && response.roles && response.roles[0] === "ROLE_USER"){
+                        this.props.history.push("/updateProfile");                                         
+                   } else {
+                        this.props.history.push("/");   
+                   }   
+                   window.location.reload();                 
                 },
                 error => {
                     const reMessage = (
@@ -85,7 +97,7 @@ export default class LoginComponent extends Component {
                         this.form = c;
                     }}>
                         <div className="form-group">
-                            <lable htmlFor="username">Username</lable>
+                            <label htmlFor="username">Username</label>
                             <Input type="text" 
                             className="form-control" 
                             name ="username" 
@@ -96,10 +108,10 @@ export default class LoginComponent extends Component {
                         </div>
 
                         <div className="form-group">
-                            <lable htmlFor="password">Password</lable>
+                            <label htmlFor="password">Password</label>
                             <Input type="password" 
                             className="form-control" 
-                            name ="username" 
+                            name ="password" 
                             value = {this.state.password}
                             onChange = {this.onChangePassword}
                             validations = {[required]}

@@ -7,6 +7,10 @@ import TextArea from "react-validation/build/textarea"
 import filesService from '../../../services/files-service';
 import blogService from '../../../services/blog-service';
 
+import API from '../../API';
+
+const API_URL = API + "file/";
+
 const required = value => {
     if(!value || value === "0"){
         return (
@@ -16,8 +20,6 @@ const required = value => {
         )
     }
 }
-
-const API_URL = "http://localhost:8081/";
 
 class AddBlog extends Component {
         constructor(props){
@@ -133,6 +135,7 @@ class AddBlog extends Component {
         if(this.state.image){
             this.state.image.map((img, index) => {
                 filesService.delete(img.id);
+                return true;
             })
         }
         this.setState({
@@ -231,7 +234,7 @@ class AddBlog extends Component {
                                 {progressInfos && progressInfos.map((progressInfo, index) => (
                                     <div className="mb-2" key={index}>
                                         {image[index] && 
-                                        <img src={API_URL + "/files/" + image[index].id} alt={progressInfo.fileName} height="80px" className="mr20" />}                                                                                
+                                        <img src={API_URL + image[index].id} alt={progressInfo.fileName} height="80px" className="mr20" />}                                                                                
                                         <span>{progressInfo.fileName}</span>
                                         <span style={{float:"right"}} onClick={(e, idx) => this.deleteImage(e, index)}><i className="fas fa-window-close"></i></span>
                                         <div className="progress">

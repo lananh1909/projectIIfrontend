@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { Link } from "react-router-dom";
 
 class DropdownUser extends Component {
@@ -34,11 +35,21 @@ class DropdownUser extends Component {
             <div ref={this.wrapperRef}>
                 <ul className="navbar-nav ml-auto ml-md-0">
                     <li className="nav-item dropdown" onClick={this.toggleOpen}>
-                    <div className="nav-link dropdown-toggle" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i className="fas fa-user fa-fw" /></div>
+                    <div className="nav-link dropdown-toggle text-primary" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i className="fas fa-user fa-fw" /></div>
                     <div className="dropdown-menu dropdown-menu-right" id="dropUser" aria-labelledby="userDropdown">
-                        <Link to={"/profile"} className="dropdown-item">
-                        {this.props.currentUser.username}
-                        </Link>
+                        {this.props.admin?(
+                            <Link to="/profile" className="dropdown-item">{this.props.currentUser.username}</Link>
+                        ):(
+                            <div>
+                                <Link to={"/updateProfile"} className="dropdown-item">
+                                    {this.props.currentUser.username}
+                                </Link>
+                                <Link to={"/myActivity"} className="dropdown-item">
+                                    Hoạt động
+                                </Link>
+                            </div>
+                        )}
+                        
                         <div className="dropdown-divider" />
                         <Link className="dropdown-item" to={"/login"} onClick={this.props.logOut}>LogOut</Link>
                     </div>
@@ -48,5 +59,9 @@ class DropdownUser extends Component {
         );
     }
 }
-
-export default DropdownUser;
+const mapStateToProps = (state, ownProps) => {
+    return {
+        admin: state.role
+    }
+}
+export default connect(mapStateToProps)(DropdownUser)

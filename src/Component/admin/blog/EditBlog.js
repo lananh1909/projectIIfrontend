@@ -6,6 +6,9 @@ import UploadFilesService from '../../../services/files-service';
 import TextArea from "react-validation/build/textarea"
 import filesService from '../../../services/files-service';
 import blogService from '../../../services/blog-service';
+import API from '../../API';
+
+const API_URL = API + "file/";
 
 const required = value => {
     if(!value || value === "0"){
@@ -17,7 +20,6 @@ const required = value => {
     }
 }
 
-const API_URL = "http://localhost:8081/";
 
 const divStyle = {
     position: 'relative',
@@ -166,6 +168,7 @@ class EditBlog extends Component {
         if(this.state.image){
             this.state.image.map((img, index) => {
                 filesService.delete(img.id);
+                return true;
             })
         }
         this.setState({
@@ -273,7 +276,7 @@ class EditBlog extends Component {
                             <div className="row">
                                 {this.state.listId && this.state.listId.map((id, idx) => (
                                     <div style={divStyle} className="col-sm-4 mt-2">
-                                        <img src={API_URL + "/files/" + id} alt={this.state.blog.title} className="img-fluid"/>
+                                        <img src={API_URL + id} alt={this.state.blog.title} className="img-fluid"/>
                                         <div onClick={(e, index) => this.delete(e, idx)} style={closeStyle}><i className="fas fa-times text-light"></i></div>
                                     </div>
                                 ))}

@@ -95,7 +95,7 @@ class ListBlog extends Component {
         const search = e.target.value;
         this.setState({
             searchTitle: search
-        })
+        }, ()=>this.findByTitle())
     };
 
     findByTitle = () => {

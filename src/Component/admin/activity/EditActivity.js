@@ -452,7 +452,7 @@ class EditActivity extends Component {
                                 type="date" 
                                 key={this.state.theInputKey || '' }
                                 value={this.state.fromDate}
-                                min={this.valueDate(this.state.activity.fromDate)}
+                                min={this.valueDate(this.state.today)}
                                 onChange={this.onFromDateChange} 
                                 validations = {[required]}/>
                             </div>

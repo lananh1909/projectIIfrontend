@@ -5,10 +5,13 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import AuthService from './services/auth-service';
 import MyRouter from './router/MyRouter'
 import Nav from './Component/nav/Nav';
+import UserNav from './Component/nav/UserNav';
 import SideBar from './Component/nav/SideBar';
-import UserSideBar from './Component/nav/UserSideBar';
+import UserRouter from './router/UserRouter';
+import { connect } from 'react-redux';
+import Footer from './Component/user/home/Footer';
 
-export default class App extends Component{
+class App extends Component{
   constructor(props){
     super(props);
     this.logOut = this.logOut.bind(this);
@@ -22,6 +25,12 @@ export default class App extends Component{
 
   componentDidMount() {
     const user = AuthService.getCurrentUser();
+    if(user){
+      this.props.dispatch({type: "LOGIN"})
+    }
+    if(user && user.roles[0] === "ROLE_ADMIN"){
+      this.props.dispatch({type: "ADMIN"})
+    }
   
     if(user){
       this.setState({
@@ -37,10 +46,16 @@ export default class App extends Component{
       currentUser: undefined,
       showAdminBoard: false
     });
+    this.props.dispatch({type: "LOGOUT"});
   }
 
   showSideNav(){
     document.getElementById("body").classList.toggle("sb-sidenav-toggled");
+    document.getElementById("body").classList.toggle("sb-nav-fixed");
+  }
+
+  scrollToFooter() {
+    window.scrollTo(0,document.body.scrollHeight);
   }
   
   render(){
@@ -48,15 +63,33 @@ export default class App extends Component{
 
     return(
       <Router>
-        <div id="body" className= "sb-nav-fixed">
-          <Nav showAdminBoard = {showAdminBoard} currentUser = {currentUser} logOut={this.logOut} showSideNav={this.showSideNav}/>
-          <div id="layoutSidenav">
-            {currentUser && !showAdminBoard && <UserSideBar/>}
-            {showAdminBoard && <SideBar/>}
-            <MyRouter/> 
-          </div>
+        <div id="body">
+          {showAdminBoard?(
+            <div>
+              <Nav showAdminBoard = {showAdminBoard} currentUser = {currentUser} logOut={this.logOut} showSideNav={this.showSideNav}/>
+              <div id="layoutSidenav">
+                <SideBar/>
+                <MyRouter/> 
+              </div>              
+            </div>            
+          ):(
+            <div>
+              <UserNav currentUser = {currentUser} logOut={this.logOut} scrollToFooter={this.scrollToFooter}/>
+              <UserRouter/>
+              <Footer/>
+            </div>
+          )}        
+          
         </div>
       </Router>
     );
   }
 }
+
+const mapStateToProps = (state, ownProps) => {
+  return {
+    prop: state.prop
+  }
+}
+
+export default connect(mapStateToProps)(App)

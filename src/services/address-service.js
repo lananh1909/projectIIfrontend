@@ -1,7 +1,8 @@
 import axios from 'axios';
 import authHeader from './auth-header';
+import API from '../Component/API';
 
-const API_URL = "http://localhost:8081/address/";
+const API_URL = API + "address/";
 
 const headers = {
     'Content-Type': 'application/json',
@@ -10,11 +11,11 @@ const headers = {
 
 class AddressService{
     getProvinces(){
-        return axios.get(API_URL + "get-all-province", {headers: headers});
+        return axios.get(API_URL + "provinces", {headers: headers});
     }
 
     getDistricts(provinceId){
-        return axios.post(API_URL + "get-all-district", {provinceId}, {headers: headers})
+        return axios.post(API_URL + "districts", {provinceId}, {headers: headers})
         .then(
             response => {
                 return response.data;
@@ -23,7 +24,7 @@ class AddressService{
     }
 
     getCommunes(districtId){
-        return axios.post(API_URL + "get-all-commune", {districtId}, {headers: headers})
+        return axios.post(API_URL + "communes", {districtId}, {headers: headers})
         .then(
             response => {
                 return response.data;

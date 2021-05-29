@@ -1,17 +1,18 @@
 import axios from "axios";
 import authHeader from "./auth-header";
+import API from "../Component/API"
 
 const headers = {
     'Content-Type': 'application/json',
     'Authorization': authHeader()
 }
 
-const API_URL = "http://localhost:8081/blog/";
+const API_URL = API + "blog/";
 
 
 class BlogService{
     addBlog(title, content, files){
-        return axios.post(API_URL + "create-blog", 
+        return axios.post(API_URL + "create", 
         {
             title: title,
             content: content,
@@ -25,22 +26,22 @@ class BlogService{
     }
 
     getBlog(params){
-        return axios.get(API_URL + "get-blogs", {headers: headers, params: params});
+        return axios.get(API_URL + "get", {headers: headers, params: params});
     }
 
     deleteBlog(id){
-        axios.delete(API_URL + "delete-blog", {
+        axios.delete(API_URL + "delete", {
             headers: headers,
             data: id
         });
     }
 
     getBlogById(id){
-        return axios.get(API_URL + "get-blog/" + id, {headers: headers});
+        return axios.get(API_URL + "get/" + id, {headers: headers});
     }
 
     editBlog(id, title, content, files){
-        return axios.put(API_URL + "update-blog/" + id, {
+        return axios.put(API_URL + "update/" + id, {
             title: title,
             content: content,
             listImage: files

@@ -2,6 +2,7 @@ import { Pagination } from '@material-ui/lab';
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import activityService from '../../../services/activity-service';
+import topicService from '../../../services/topic-service';
 import Activity from './Activity';
 
 const pageSizes = [3, 6, 9];
@@ -13,17 +14,29 @@ class ListActivity extends Component {
             list: "", 
             timeDecrease: false,
             volunteerDecrease: false,
-            table: false,
+            table: true,
             sortConfig: "",
             searchTitle: "",
             page: 1,
             count: 0,
-            pageSize: 3
+            pageSize: 3,
+            topic: 0,
+            topics: []
         }
     }
 
     componentDidMount() {
         this.retrieveActivity();
+        topicService.getTopic().then(
+            response => {
+                this.setState({
+                    topics: response.data
+                });
+            }, 
+            error => {
+                console.log(error.toString());
+            }
+        )
     }
 
     deleteActivity = (id) => {
@@ -103,17 +116,16 @@ class ListActivity extends Component {
         const search = e.target.value;
         this.setState({
             searchTitle: search
-        })
+        }, () => this.findByTitle())
     };
 
     findByTitle = () => {
         this.setState({
             page: 1
-        })
-        this.retrieveActivity();
+        }, () => this.retrieveActivity());
     };
 
-    getRequestParams = (searchTitle, page, pageSize) => {
+    getRequestParams = (searchTitle, page, pageSize, topic) => {
         let params = {};
     
         if (searchTitle) {
@@ -127,12 +139,15 @@ class ListActivity extends Component {
         if (pageSize) {
           params["size"] = pageSize;
         }
+        if(topic){
+            params["topic"] = topic;
+        }
     
         return params;
     };
 
     retrieveActivity = () => {
-        const params = this.getRequestParams(this.state.searchTitle, this.state.page, this.state.pageSize);
+        const params = this.getRequestParams(this.state.searchTitle, this.state.page, this.state.pageSize, this.state.topic);
     
         activityService.getByPage(params)
         .then((response) => {
@@ -164,22 +179,51 @@ class ListActivity extends Component {
     };
     
 
+    handleTopicChange = (event) => {
+        this.setState({
+            topic: event.target.value
+        }, () => {this.retrieveActivity()})
+    }
+
     render() {
         return (
             <div className="container">
                 <div><Link to="/createActivity" className="btn btn-primary mt-5"><i className="far fa-calendar-plus mr-1"></i>Thêm</Link></div>  
                 <button className="btn btn-secondary mt-1 mb-1" onClick={() => this.toTable()}>{this.state.table?"Card": "Table"}</button>
-                
-                <div className="input-group mb-3 mt-3">
-                    <input type="text"
-                    className="from-control"
-                    placeholder="Tìm kiếm"
-                    value={this.state.searchTitle}
-                    onChange={this.onChangeSearchTitle}/>
-                    <div className="input-group-append">
-                        <button className="btn btn-outline-secondary" type="button" onClick={this.findByTitle}>Search</button>
+                <div className="row mb-3 mt-3">
+                    <div className="col-sm-6">
+                        <div className="input-group">
+                            <input type="text"
+                            className="from-control"
+                            placeholder="Tìm kiếm"
+                            value={this.state.searchTitle}
+                            onChange={this.onChangeSearchTitle}/>
+                            <div className="input-group-append">
+                                <button className="btn btn-outline-secondary" type="button" onClick={this.findByTitle}>Search</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="col-sm-6">
+                        <div className="row">
+                            <div className="col-sm-4 text-right" style={{"padding":"6px"}}>Chọn chủ đề:</div>
+                            <div className="col-sm-8">
+                                <select name="topic" className="custom-select"                
+                                value={this.state.topic}
+                                onChange={this.handleTopicChange}
+                                >
+                                    <option value="0">All</option>
+                                    {this.state.topics &&
+                                    this.state.topics.map((x) => {
+                                        return (
+                                            <option value={x.id} key={x.id}>{x.topicName}</option>
+                                        )
+                                    })}
+                                </select>
+                            </div>
+                        </div>                        
                     </div>
                 </div>
+                
                 <div className="mt-3">
                     Items per page: 
                     <select onChange={this.handlePageSizeChange} value={this.state.pageSize}>
@@ -212,7 +256,7 @@ class ListActivity extends Component {
                             </tr>
                         </thead>
                         <tbody>
-                            {this.state.list && this.state.list.map((act, index) => {
+                            {this.state.list?this.state.list.map((act, index) => {
                                 return (
                                     <tr key={act.id}>
                                         <th scope="row">{index + 1}</th>
@@ -232,7 +276,7 @@ class ListActivity extends Component {
                                         </td>                                    
                                     </tr>
                                 )
-                            })}                        
+                            }):(<tr></tr>)}                        
                             
                         </tbody>
                     </table>
@@ -259,5 +303,4 @@ class ListActivity extends Component {
         );
     }
 }
-
 export default ListActivity;

@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import API from '../../API';
 
-const API_URL = "http://localhost:8081/files/";
+const API_URL = API + "file/";
 
 const style = {
     overflow: 'hidden',

@@ -1,12 +1,13 @@
-import axios from "axios"
-import authHeader from "./auth-header"
+import axios from "axios";
+import authHeader from "./auth-header";
+import API from '../Component/API';
 
 const headers = {
     'Content-Type': 'application/json',
     'Authorization': authHeader()
 }
 
-const API_URL = "http://localhost:8081/";
+const API_URL = API + "file/";
 
 class UploadFilesService {
     upload(file){
@@ -16,7 +17,7 @@ class UploadFilesService {
     }
 
     getFiles(){
-        return axios.get(API_URL + "files", {headers: headers});
+        return axios.get(API_URL, {headers: headers});
     }
 
     uploadProgress(file, onUploadProgress) {
@@ -30,7 +31,7 @@ class UploadFilesService {
         });
     }
     delete(id){
-        axios.delete(API_URL + "delete-files/" + id, {
+        axios.delete(API_URL + "delete/" + id, {
             headers: headers
         })
     }
