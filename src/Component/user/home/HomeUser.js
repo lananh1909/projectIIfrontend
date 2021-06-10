@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import activityService from '../../../services/activity-service';
 import blogService from '../../../services/blog-service';
 import BlogDetail from '../../admin/blog/BlogDetail';
+import CustomMap from '../activity/Map';
 import Activity from './Activity';
 import Blog from './Blog';
 
@@ -98,10 +99,13 @@ class HomeUser extends Component {
                                 THÔNG TIN GIỚI THIỆU
                             </div>
                             <img className="mt-2" src="/banner.jpg" alt="banner" width="100%"/>
-                            <div className="card-text small" style={{whiteSpace:"pre-wrap"}}>
+                            <div className="card-text small mb-3" style={{whiteSpace:"pre-wrap"}}>
                                 <div className="mt-1 font-weight-bold">QUỸ BẢO TRỢ TRẺ EM TỈNH ĐIỆN BIÊN HỖ TRỢ THỰC HIỆN QUYỀN TRẺ EM</div>
                                 <div>1. Quỹ Bảo trợ trẻ em có nhiệm vụ huy động nguồn lực từ các tổ chức, cá nhân trong nước và quốc tế để hỗ trợ thực hiện các mục tiêu vì trẻ em trên địa bàn tỉnh Điện Biên</div>
                                 <div>2. Quỹ Bảo trợ trẻ em tỉnh Điện Biên hỗ trợ cho trẻ em có hoàn cảnh đặc biệt, khó khăn, mồ côi, tàn tật, lang thang trên địa bàn toàn tỉnh thông qua Quỹ Bảo trợ trẻ em các cấp để thực hiện 4 nhóm quyền cơ bản của trẻ em gồm: (1) Quyền được sống, (2) Quyền được bảo vệ, (4) Quyền được tham gia với phương châm " TẬN TÂM - MINH BẠCH - KỊP THỜI - CÙNG THAM GIA "</div>
+                            </div>
+                            <div style={{height: '500px'}}>
+                                <CustomMap/>
                             </div>
                         </div>
                     </div>

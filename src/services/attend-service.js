@@ -41,4 +41,14 @@ class AttendService {
     getStatistic(){
         return axios.get(API_URL + "statistic", {headers:headers});
     }
+
+    changeState(actId, volId, state){
+        return axios.post(API_URL + "change-state", {
+            actId: actId,
+            volId: volId,
+            state: state
+        }, {headers: headers}).then(
+            response => response.data
+        )
+    }
 } export default new AttendService();

@@ -87,6 +87,7 @@ class ListBlog extends Component {
         this.setState({
             page: value
         }, () => {this.getBlogs()})
+        window.scrollTo(0, 0);
     };
 
     onClickBlog = (e, blog) => {

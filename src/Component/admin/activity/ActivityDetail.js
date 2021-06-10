@@ -6,6 +6,7 @@ import Volunteer from './Volunteer';
 import API from '../../API';
 import { connect } from 'react-redux';
 import RegisterForm from '../../user/activity/RegisterForm';
+import { CSVLink } from 'react-csv';
 
 const API_URL = API + "file/";
 
@@ -24,7 +25,9 @@ class ActivityDetail extends Component {
             address: "",
             volunteers: [],
             attend: "",
-            isAvailable: true
+            isAvailable: true,
+            headers: [],
+            viewVol: []
         }
     }
 
@@ -40,6 +43,32 @@ class ActivityDetail extends Component {
                 console.log(error.toString());
             }
         )
+
+        this.setState({
+            headers: [
+                {label: 'Họ và tên', key: 'volunteer.fullName'},
+                {label: 'Ngày sinh', key: 'birthDate'},
+                {label: 'Giới tính', key: 'volunteer.gender'},
+                {label: 'Địa chỉ', key: 'address'},                
+                {label: 'Số điện thoại', key: 'volunteer.phoneNum'},
+                {label: 'Kĩ năng, kinh nghiệm', key: 'skill'},
+                {label: "Trạng thái", key: "state"}
+            ]
+        })
+    }
+
+    generateCSV = () => {
+        var tmpData = [...this.state.volunteers];
+        tmpData.forEach((item) => {
+            if(item.volunteer){
+                var tmp = item.volunteer;
+                item.address = this.toStringCommune(tmp.commune);
+                item.birthDate = new Date(tmp.birthDate).toLocaleDateString("en-GB");
+            }            
+        })
+        this.setState({
+            volunteers: tmpData
+        })
     }
 
     getVolunteer(){
@@ -47,8 +76,9 @@ class ActivityDetail extends Component {
             attendService.getAttends(this.state.activity.id).then(
                 response => {
                     this.setState({
-                        volunteers: response.data
-                    })
+                        volunteers: response.data,
+                        viewVol: response.data
+                    }, () => this.generateCSV())
                 },
                 error => {
                     console.log(error.toString());
@@ -83,16 +113,32 @@ class ActivityDetail extends Component {
         
     }
 
+    changeState = (id, state) => {
+        attendService.changeState(this.state.activity.id, id, state)
+        .then(
+            response => {
+                var v = [...this.state.volunteers]
+                v.forEach((item) => {
+                    if(item.volunteer.id === id){
+                        item.state = response;
+                    }                
+                })
+                this.setState({
+                    volunteers: v
+                })
+            },
+            error => {
+                console.log(error.toString())
+            }
+        );
+    }
+
     deleteAttend = (id) => {
-        var r = window.confirm("Bạn có chắc muốn xóa tình nguyện viên này không?");
-        if (r === true) {
-            attendService.deleteAttend(this.state.activity.id, id);
-            var v = this.state.volunteers.filter(item => item.id !== id);
-            this.setState({
-                volunteers: v
-            })
-        } else {
-        }
+        this.changeState(id, 2);        
+    }
+
+    acceptAttend = (id) => {
+        this.changeState(id, 1);
     }
 
     showAttend = (a) => {
@@ -115,6 +161,22 @@ class ActivityDetail extends Component {
             this.props.history.push("/login");
             window.location.reload();
         }
+    }
+
+    onChangeFilterState = (e) => {
+        const state = e.target.value;
+        if(state !== "10"){
+            var v = [...this.state.volunteers];
+            v = v.filter((item) => item.state === Number(state));
+            this.setState({
+                viewVol: v
+            })
+        } else {
+            this.setState({
+                viewVol: this.state.volunteers
+            })
+        }
+        
     }
 
     render() {
@@ -151,9 +213,38 @@ class ActivityDetail extends Component {
                     </div>
                 </div>                
                 
-                <div className="font-weight-bold">Người đăng ký: <span className="font-weight-light">Tổng số người đăng ký {this.state.volunteers.length}</span></div>
+                <div className="font-weight-bold">Người đăng ký: <span className="font-weight-light">Tổng số người đăng ký {this.state.volunteers.length || this.state.activity.numVolunteer}</span></div>
                 {this.props.admin?(
                     <div>
+                        <div className="row">
+                            <div className="col">
+                            <CSVLink data={this.state.volunteers} headers={this.state.headers} filename={"hoatdong" + this.state.activity.id + ".csv"} className="btn btn-outline-success m-1">Tải về danh sách</CSVLink>
+                            </div>
+                            <div className="col">
+                                <div onChange={this.onChangeFilterState}>
+                                    <div className="form-check form-check-inline">
+                                        <label className="form-check-label">
+                                            <input className="form-check-input" type="radio" name="state" value="10" defaultChecked/> Tất cả
+                                        </label>
+                                    </div>
+                                    <div className="form-check form-check-inline">
+                                        <label className="form-check-label">
+                                            <input className="form-check-input" type="radio" name="state" value="0"/> Chờ xác nhận
+                                        </label>
+                                    </div>
+                                    <div className="form-check form-check-inline">
+                                        <label className="form-check-label">
+                                            <input className="form-check-input" type="radio" name="state" value="1"/> Đã xác nhận
+                                        </label>
+                                    </div>
+                                    <div className="form-check form-check-inline">
+                                        <label className="form-check-label">
+                                            <input className="form-check-input" type="radio" name="state" value="2"/> Đã hủy
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     <div className="row">
                         <div className="col">
                             <table className="table table-striped">
@@ -163,21 +254,26 @@ class ActivityDetail extends Component {
                                     <th scope="col">Họ và tên</th>
                                     <th scope="col">Ngày sinh</th>
                                     <th scope="col">Địa chỉ</th>
+                                    <th scope="col">Trạng thái</th>
                                     <th></th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {this.state.volunteers && this.state.volunteers.map((v, index) => {
+                                    {this.state.viewVol && this.state.viewVol.map((v, index) => {
                                         return (
                                             <tr key={v.volunteer.id}>
                                                 <th scope="row">{index + 1}</th>
                                                 <td>{v.volunteer.fullName}</td>
-                                                <td>{new Date(v.volunteer.birthDate).toLocaleDateString('en-GB')}</td>
-                                                <td>{this.toStringCommune(v.volunteer.commune)}</td>
+                                                <td>{v.birthDate}</td>
+                                                <td>{v.address}</td>
+                                                <td>
+                                                    {v.state===0?"Chờ xác nhận":(v.state===1?"Đã xác nhận":"Đã hủy")}
+                                                </td>
                                                 <td>
                                                 <div className="btn-group btn-block" style={{float:"right"}}>
-                                                    <button type="button" className="btn btn-danger col-sm-4" onClick={(id) => this.deleteAttend(v.volunteer.id)}><i className="far fa-trash-alt mr-1"></i></button>
-                                                    <button type="button" className="btn btn-success col-sm-4" onClick={(a) => this.showAttend(v)}><i className="fas fa-info-circle"></i></button>
+                                                    <button type="button" disabled={v.state === 1} title="Xác nhận" className="btn btn-primary col-sm-4" onClick={(id) => this.acceptAttend(v.volunteer.id)}><i className="fas fa-check"></i></button>
+                                                    <button type="button" disabled={v.state === 2} title="Hủy" className="btn btn-danger col-sm-4" onClick={(id) => this.deleteAttend(v.volunteer.id)}><i className="fas fa-times"></i></button>
+                                                    <button type="button" title="Chi tiết" className="btn btn-success col-sm-4" onClick={(a) => this.showAttend(v)}><i className="fas fa-info-circle"></i></button>
                                                 </div>
                                                 </td>                                    
                                             </tr>

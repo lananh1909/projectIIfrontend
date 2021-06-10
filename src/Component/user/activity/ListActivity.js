@@ -117,6 +117,7 @@ class ListActivity extends Component {
         this.setState({
             page: value
         }, () => {this.retrieveActivity()})
+        window.scrollTo(0, 0);
     };
 
     handleTopicChange = (event) => {

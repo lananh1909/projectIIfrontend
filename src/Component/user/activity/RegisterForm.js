@@ -7,6 +7,8 @@ import TextArea from "react-validation/build/textarea"
 import AddressService from '../../../services/address-service';
 import volunteerService from '../../../services/volunteer-service';
 import attendService from '../../../services/attend-service';
+import RingLoader from "react-spinners/RingLoader";
+import { css } from "@emotion/react";
 
 const required = value => {
     if(!value || value === "0"){
@@ -17,6 +19,16 @@ const required = value => {
         )
     }
 }
+
+const override = css`
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    z-index: 2;
+    width: 120px;
+    height: 120px;
+    margin: -76px 0 0 -76px;
+`;
 
 class RegisterForm extends Component {
     constructor(props){
@@ -39,7 +51,9 @@ class RegisterForm extends Component {
             volunteer: "",
             skill: "",
             changeProfile: false,
-            disabled: false
+            disabled: false,
+            loading: false,
+            actId: ""
         }
     }
 
@@ -49,7 +63,7 @@ class RegisterForm extends Component {
             var commune = volunteer.commune;
             if(commune){
                 //this.form.district.disabled = false;
-                var formRegister = document.getElementById(this.props.actId);
+                var formRegister = document.getElementById(this.state.actId);
                 if(formRegister){
                     var dis = formRegister.querySelector(".district");
                     if(dis)
@@ -132,9 +146,10 @@ class RegisterForm extends Component {
         if(prevProps.attend !== this.props.attend){
             this.setState({
                 volunteer: this.props.attend.volunteer,
-                skill: this.props.attend.skill
+                skill: this.props.attend.skill,
+                actId: this.props.actId
             }, () => this.genState())
-            if(new Date(this.props.attend.activity && this.props.attend.activity.fromDate) <= new Date()){
+            if((this.props.attend.activity && new Date(this.props.attend.activity.fromDate) <= new Date()) || this.props.attend.state === 1){
                 this.setState({
                     disabled: true
                 })
@@ -143,6 +158,10 @@ class RegisterForm extends Component {
                     disabled: false
                 })
             }
+        } else if(prevProps.actId !== this.props.actId){
+            this.setState({
+                actId: this.props.actId
+            }, () => this.genState())
         }
     }
 
@@ -299,6 +318,9 @@ class RegisterForm extends Component {
     handleSubmit(e){
         e.preventDefault();
         this.form.validateAll();
+        this.setState({
+            loading: true
+        })
         if(this.checkBtn.context._errors.length === 0){
             if(this.state.changeProfile){
                 volunteerService.createVolunteer(this.state.fullname, this.state.phoneNum, this.state.birthDate, this.state.gender, this.state.commune)
@@ -314,8 +336,12 @@ class RegisterForm extends Component {
             attendService.createAttend(this.props.actId, this.state.skill)
             .then(
                 response => {
-                    window.alert("Gửi đơn đăng ký thành công!");
-                    window.location.reload();
+                    this.setState({
+                        loading: false
+                    }, () => {
+                        window.alert("Gửi đơn đăng ký thành công!");
+                        window.location.reload();
+                    })                    
                 },
                 error => {
                     console.log(error.toString());
@@ -489,6 +515,10 @@ class RegisterForm extends Component {
                     </div>
                 </div>
                 </div>
+                <div className={this.state.loading ? 'parentDisable' : ''} width="100%">
+                    <RingLoader loading={this.state.loading} css={override} color="#007bff"/>
+                </div>
+                              
             </div>
         );
     }

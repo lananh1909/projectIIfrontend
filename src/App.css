@@ -10314,3 +10314,14 @@ body {
 .hover-item:hover{
   border-bottom: 3px solid #0069d9;
 }
+
+.parentDisable{
+  position: fixed;
+  top: 0;
+  left: 0;
+  background: #666;
+  opacity: 0.8;
+  z-index: 1;
+  height: 100%;
+  width: 100%;
+}

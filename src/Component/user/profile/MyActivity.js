@@ -70,8 +70,8 @@ class MyActivity extends Component {
                             <div className="col-sm-4 mb-2">
                                 <Activity activity={item.activity} key={item.activity.id}/>
                                 <div className="col bg-light text-right pb-2">
-                                    <button onClick={(e, attend) => this.onClickRegister(e, item)} data-toggle="modal" data-target="#attend" className="btn btn-success mt-3">Xem đơn đăng ký</button>
-                                    <button disabled={new Date(item.activity.fromDate) <= new Date()} className="btn btn-danger mt-3 ml-3" onClick={(e, id) => this.deleteAttend(e, item.activity && item.activity.id)}>Xóa</button>
+                                    <button onClick={(e, attend) => this.onClickRegister(e, item)} data-toggle="modal" data-target="#attend" className="btn btn-success mt-3">{item.state===0?"Chờ phê duyệt":(item.state===1)?"Đã phê duyệt":"Đã hủy"}</button>
+                                    <button disabled={new Date(item.activity.fromDate) <= new Date() || item.state === 1} className="btn btn-danger mt-3 ml-3" onClick={(e, id) => this.deleteAttend(e, item.activity && item.activity.id)}>Xóa</button>
                                 </div>
                                 
                             </div>

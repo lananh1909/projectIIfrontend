@@ -1,25 +1,41 @@
-import { Map, GoogleApiWrapper, Marker } from 'google-maps-react';
 import React, { Component } from 'react';
+import {Map, Marker, GoogleApiWrapper} from 'google-maps-react';
 
-const mapStyles = {
+const containerStyle = {
+    position: 'absolute',  
+    width: '90%',
+    height: '500px'
+}
+
+const style = {
     width: '100%',
-    height: '100%',
-};
+    height: '100%'
+}
 
-class CustomMap extends Component {
+
+ 
+export class CustomMap extends Component {
     render() {
         return (
-            <Map
-            google={this.props.google}
-            zoom={8}
-            style={mapStyles}
-            initialCenter={{ lat: 47.444, lng: -122.176}}
-            >
-            <Marker position={{ lat: 48.00, lng: -122.00}} />
-            </Map>
+          <Map 
+          google={this.props.google} 
+          zoom={16} 
+          style={style}
+          containerStyle={containerStyle}
+          initialCenter={{
+            lat: 21.406390,
+            lng: 103.032130
+          }}>
+     
+            <Marker position={{
+                lat: 21.406390,
+                lng: 103.032130
+            }}/>
+          </Map>
         );
-    }
+      }
 }
+ 
 export default GoogleApiWrapper({
-    apiKey: 'AIzaSyBmeuaWQ005oxyRalpVH9c0C8yfHGPQSUM'
-  })(CustomMap);
+  apiKey: ('AIzaSyAF3_5Cadkh5rkgKKQe_GlyJjkgAaw0Nvo')
+})(CustomMap)
