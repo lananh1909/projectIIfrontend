@@ -318,10 +318,11 @@ class RegisterForm extends Component {
     handleSubmit(e){
         e.preventDefault();
         this.form.validateAll();
-        this.setState({
-            loading: true
-        })
+        
         if(this.checkBtn.context._errors.length === 0){
+            this.setState({
+                loading: true
+            })
             if(this.state.changeProfile){
                 volunteerService.createVolunteer(this.state.fullname, this.state.phoneNum, this.state.birthDate, this.state.gender, this.state.commune)
                 .then(
@@ -330,6 +331,9 @@ class RegisterForm extends Component {
                     },
                     error => {
                         console.log(error.toString());
+                        this.setState({
+                            loading: false
+                        })
                     }
                 )
             }
@@ -345,6 +349,9 @@ class RegisterForm extends Component {
                 },
                 error => {
                     console.log(error.toString());
+                    this.setState({
+                        loading: false
+                    })
                 }
             )
         }

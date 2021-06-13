@@ -144,12 +144,14 @@ class EditActivity extends Component {
     }
     
     upload(e){
+        
         e.preventDefault();
         this.form.validateAll();
         if(this.checkBtn.context._errors.length === 0){
+            console.log("hi");
             if(this.state.selectedFiles){
                 var currentFile = this.state.selectedFiles[0];
-
+                console.log(currentFile);
                 this.setState({
                     progress: 0,
                     currentFile: currentFile
@@ -503,7 +505,7 @@ class EditActivity extends Component {
                         </div>
                         <div className="form-row" style={{display: 'none'}}>
                             <div className="col-md-12">
-                                <Input type="text" className="form-control" value={this.state.image.name} 
+                                <Input type="text" className="form-control" value={this.state.image && this.state.image.name} 
                                 validations={[required]}
                                 ></Input>                            
                             </div>
