@@ -149,7 +149,7 @@ class ListActivity extends Component {
         if(!this.props.login){
             e.preventDefault();
             window.alert("Bạn cần đăng nhập để đăng ký hoạt động!");
-            this.props.history.replace("/login");
+            window.location.replace("/login");
         } else {
             this.setState({
                 itemRegister: id

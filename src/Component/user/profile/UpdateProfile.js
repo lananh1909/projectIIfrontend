@@ -235,7 +235,7 @@ class UpdateProfile extends Component {
             .then(
                 response => {
                     window.alert("Đã cập nhập thông tin!");
-                    this.props.history.replace('/');
+                    window.location.replace('/');
                 },
                 error => {
                     console.log(error.toString());

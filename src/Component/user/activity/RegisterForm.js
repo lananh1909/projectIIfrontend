@@ -344,7 +344,7 @@ class RegisterForm extends Component {
                         loading: false
                     }, () => {
                         window.alert("Gửi đơn đăng ký thành công!");
-                        this.props.history.replace(window.location.pathname);  
+                        window.location.replace(window.location.pathname);  
                     })                    
                 },
                 error => {

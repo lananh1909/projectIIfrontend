@@ -197,7 +197,7 @@ class EditBlog extends Component {
             .then(
                 response => {
                     window.alert("Đã sửa bài viết thành công!");
-                    this.props.history.replace("/listBlog");
+                    window.location.replace("/listBlog");
                 },
                 error => {
                     console.log(error.toString());

@@ -65,7 +65,7 @@ class CreateTopic extends Component {
         .then(
             (respone) => {
                 window.alert("Đã lưu!");
-                this.props.history.replace(window.location.pathname);  
+                window.location.replace(window.location.pathname);  
             },
             (error) => {
                 const resMessage = (error.response && error.response.data) ||

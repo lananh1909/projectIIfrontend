@@ -44,7 +44,7 @@ class BlogDetail extends Component {
         var r = window.confirm("Bạn có chắc muốn xóa bài viết này không?");
         if (r === true) {
             blogService.deleteBlog(id);
-            this.props.history.replace("/listBlog");
+            window.location.replace("/listBlog");
         } else {
         }
         

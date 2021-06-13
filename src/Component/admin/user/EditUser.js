@@ -109,7 +109,7 @@ class EditUser extends Component {
             .then(
                 response => {
                     window.alert("Đã tạo người dùng thành công!");
-                    this.props.history.replace("/listUser");
+                    window.location.replace("/listUser");
                 },
                 error => {
                     const resMessage = (error.response && error.response.data && error.response.data.message) ||
