@@ -106,8 +106,7 @@ class ActivityDetail extends Component {
         var r = window.confirm("Bạn có chắc muốn xóa hoạt động này không?");
         if (r === true) {
             activityService.deleteActivity(id);
-            this.props.history.push("/listActivity");
-            window.location.reload();
+            this.props.history.replace("/listActivity");
         } else {
         }
         
@@ -158,8 +157,7 @@ class ActivityDetail extends Component {
         if(!this.props.login){
             e.preventDefault();
             window.alert("Bạn cần đăng nhập để đăng ký hoạt động!");
-            this.props.history.push("/login");
-            window.location.reload();
+            this.props.history.replace("/login");  
         }
     }
 

@@ -64,8 +64,8 @@ class CreateTopic extends Component {
         topicService.editTopic(this.state.id, this.state.name)
         .then(
             (respone) => {
-                window.alert("Đã lưu!")
-                window.location.reload();
+                window.alert("Đã lưu!");
+                this.props.history.replace(window.location.pathname);  
             },
             (error) => {
                 const resMessage = (error.response && error.response.data) ||

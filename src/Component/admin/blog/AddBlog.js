@@ -163,8 +163,7 @@ class AddBlog extends Component {
             .then(
                 response => {
                     window.alert("Đã tạo bài viết thành công!");
-                    this.props.history.push("/listBlog");
-                    window.location.reload();
+                    this.props.history.replace("/listBlog");
                 },
                 error => {
                     console.log(error.toString());

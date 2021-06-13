@@ -18,7 +18,7 @@ class MyActivity extends Component {
         const user = authService.getCurrentUser();
         
         if(!user){
-            window.location.replace("/login");
+            this.props.history.replace("/login");  
         }
 
         this.setState({

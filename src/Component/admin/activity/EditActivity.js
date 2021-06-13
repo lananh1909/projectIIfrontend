@@ -324,8 +324,7 @@ class EditActivity extends Component {
             .then(
                 response => {
                     window.alert("Đã cập nhập hoạt động!");
-                    this.props.history.push("/listActivity");
-                    window.location.reload();
+                    this.props.history.replace("/listActivity");
                 },
                 error => {
                     console.log(error.toString());

@@ -243,8 +243,7 @@ class CreateActivity extends Component {
             .then(
                 response => {
                     window.alert("Đã tạo hoạt động thành công!");
-                    this.props.history.push("/listActivity");
-                    window.location.reload();
+                    this.props.history.replace("/listActivity");
                 },
                 error => {
                     console.log(error.toString());

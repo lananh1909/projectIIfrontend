@@ -33,7 +33,7 @@ export default class LoginComponent extends Component {
 
     componentDidMount() {
         if(authService.getCurrentUser()){
-            window.location.replace("/");
+            this.props.history.replace("/");  
         }
     }
     
@@ -64,11 +64,10 @@ export default class LoginComponent extends Component {
             AuthService.login(this.state.username, this.state.password).then(
                 (response) => {
                    if(response.firstLogin === true && response.roles && response.roles[0] === "ROLE_USER"){
-                        this.props.history.push("/updateProfile");                                         
+                        this.props.history.replace("/updateProfile");                                         
                    } else {
-                        this.props.history.push("/");   
-                   }   
-                   window.location.reload();                 
+                        this.props.history.replace("/");   
+                   }                  
                 },
                 error => {
                     const reMessage = (
